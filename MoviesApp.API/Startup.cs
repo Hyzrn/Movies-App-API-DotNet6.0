@@ -1,3 +1,6 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using MoviesApp.API.Filters;
+
 namespace MoviesApp.API;
 
 public class Startup
@@ -12,8 +15,12 @@ public class Startup
 
     public void ConfigureServices(IServiceCollection services)
     {
-        services.AddControllers();
+        services.AddControllers(options =>
+        {
+            options.Filters.Add(typeof(GlobalExceptionFilter));
+        });
         services.AddEndpointsApiExplorer();
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer();
         services.AddSwaggerGen();
         
     }
@@ -30,6 +37,8 @@ public class Startup
         app.UseHttpsRedirection();
         app.UseRouting();
         app.UseAuthorization();
+        app.UseAuthorization();
+
         app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
     }
 }

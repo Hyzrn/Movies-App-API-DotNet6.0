@@ -1,0 +1,20 @@
+﻿using Microsoft.AspNetCore.Mvc.Filters;
+
+namespace MoviesApp.API.Filters
+{
+    public class GlobalExceptionFilter : ExceptionFilterAttribute
+    {
+        private readonly ILogger<GlobalExceptionFilter> _logger;
+
+        public GlobalExceptionFilter(ILogger<GlobalExceptionFilter> logger)
+        {
+            _logger = logger;
+        }
+
+        public override void OnException(ExceptionContext context)
+        {
+            _logger.LogError(context.Exception, context.Exception.Message);
+            base.OnException(context);
+        }
+    }
+}
