@@ -22,7 +22,14 @@ public class Startup
         services.AddEndpointsApiExplorer();
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer();
         services.AddSwaggerGen();
-        
+        services.AddCors(options =>
+        {    
+           var frontEndUrl = Configuration.GetValue<string>("frontend_url");
+           options.AddDefaultPolicy(builder =>
+           {
+               builder.WithOrigins(frontEndUrl).AllowAnyMethod().AllowAnyHeader();
+           });
+       });
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -36,6 +43,7 @@ public class Startup
 
         app.UseHttpsRedirection();
         app.UseRouting();
+        app.UseCors();
         app.UseAuthorization();
         app.UseAuthorization();
 

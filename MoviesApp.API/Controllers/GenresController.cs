@@ -8,10 +8,28 @@ namespace MoviesApp.API.Controllers
     [ApiController]
     public class GenresController : ControllerBase
     {
+        [HttpGet]
+        public IActionResult Get()
+        {
+            var genres = new List<Genre>()
+            {
+                new Genre()
+                {
+                     Id = 1,
+                     Name = "Comedy"
+                },
+                new Genre()
+                {
+                     Id = 2,
+                     Name = "Drama"
+                }
+            };
+            return Ok(genres);
+        }
+
         [HttpPost]
         public IActionResult Add(Genre genre)
         {
-            throw new ApplicationException();
             return Ok();
         }
     }
