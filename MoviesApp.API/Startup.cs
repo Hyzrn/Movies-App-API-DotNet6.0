@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
+using MoviesApp.API.APIBehaviour;
 using MoviesApp.API.Filters;
 
 namespace MoviesApp.API;
@@ -15,16 +17,22 @@ public class Startup
 
     public void ConfigureServices(IServiceCollection services)
     {
+        services.AddDbContext<ApplicationDbContext>(options =>
+        {
+            options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+        });
         services.AddControllers(options =>
         {
             options.Filters.Add(typeof(GlobalExceptionFilter));
-        });
+            options.Filters.Add(typeof(ParseBadRequest));
+        }).ConfigureApiBehaviorOptions(BadRequestBehaviour.Parse);
+
         services.AddEndpointsApiExplorer();
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer();
         services.AddSwaggerGen();
         services.AddCors(options =>
         {    
-           var frontEndUrl = Configuration.GetValue<string>("frontend_url");
+           var frontEndUrl = Configuration.GetValue<string>("FrontendUrl");
            options.AddDefaultPolicy(builder =>
            {
                builder.WithOrigins(frontEndUrl).AllowAnyMethod().AllowAnyHeader();
